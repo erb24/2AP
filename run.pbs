@@ -16,24 +16,11 @@ module list
 exe=`which gmx_mpi`
 
 
-for ((K=1;K<=1;K++)); do
-    tsim=$(echo $K\*10 | bc -l)
-
-    $exe grompp -f pro.mdp -p 2AP.top -c NVT_eq.pdb -o NPT_prod.tpr -maxwarn 5
-    $exe mdrun -v -s NPT_prod.tpr -deffnm NPT_prod -c NPT_last.pdb -ntomp 1
-
-
-    mkdir ${tsim}ns
-    mv    NPT_prod.xtc        ${tsim}ns
-    mv    NPT_prod.trr        ${tsim}ns
-    mv    NPT_prod.cpt        ${tsim}ns
-    mv    NPT_prod.log        ${tsim}ns
-    mv    NPT_prod.tpr        ${tsim}ns
-    mv    NPT_prod.edr        ${tsim}ns
-    cp    NPT_last.pdb        ${tsim}ns
-    rm -rf \#*
-done
-
-
+$exe grompp -f pro.mdp -p 2AP.top -c NVT_eq.pdb -o NPT_prod.tpr -maxwarn 5
+if [ -f state_last.cpt ]; then
+  mpirun $exe mdrun -v -s NPT_prod.tpr -deffnm NPT_prod -c NPT_last.pdb -cpo state_last.cpt 
+else
+  mpirun $exe mdrun -v -s NPT_prod.tpr -deffnm NPT_prod -c NPT_last.pdb -cpi state_last.cpt -cpo state_last.cpt
+fi
 
 exit
