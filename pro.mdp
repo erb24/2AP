@@ -1,0 +1,38 @@
+title					= Simulation of SYSTEM
+integrator				= md
+dt						= 0.002
+nsteps					= 500000000
+; Output control
+nstxout					= 5000
+nstvout					= 5000
+nstenergy				= 5000
+nstlog					= 5000
+nstxtcout				= 100
+compressed-x-grps			= Other
+; Neighborsearching
+cutoff-scheme			= Verlet
+ns_type					= grid
+nstlist					= 10
+rcoulomb				= 1.0
+rvdw					= 1.0
+; Bond parameters
+continuation	        = yes
+constraint_algorithm    = lincs	    
+constraints	            = h-bonds	
+lincs_iter	            = 1		    
+lincs_order	            = 4		    
+energygrps				= Other Water_and_ions
+coulombtype				= PME
+tcoupl					= v-rescale
+tc-grps					= Other   Water_and_ions
+tau_t					= 0.2     0.2
+ref_t					= 300      300
+; Pressure coupling is on
+pcoupl					= Parrinello-Rahman
+pcoupltype				= isotropic
+tau_p					= 1.0
+ref_p					= 1.0
+compressibility			= 4.5e-5
+gen_vel					= no
+gen_temp				= 300
+gen_seed				= -1

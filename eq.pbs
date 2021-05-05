@@ -1,0 +1,29 @@
+#!/bin/bash 
+#SBATCH --job-name="AAA-0.1M"
+#SBATCH -A uoo104
+#SBATCH --output="OUT-AAA-MD.%j.%N.out"
+#SBATCH --partition=shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=32
+#SBATCH --export=ALL
+#SBATCH -t 12:00:00
+#SBATCH --mail-user=ebeyerle@uoregon.edu
+#SBATCH --mail-type=begin  # email me when the job starts
+#SBATCH --mail-type=end    # email me when the job finishes
+
+
+BD=$PWD
+cd $BD
+
+sys="2AP"
+module load openmpi/4.0.4
+module load gromacs/2020.4
+
+gmx_mpi grompp -f eq_NPT.mdp -p ${sys}.top -c em.pdb -r em.pdb -o NPT_eq.tpr -maxwarn 5
+gmx_mpi mdrun -ntomp 1 -v -s NPT_eq.tpr -deffnm NPT_eq -c NPT_eq.pdb
+
+
+gmx_mpi grompp -f eq_NVT.mdp -p ${sys}.top -c NPT_eq.pdb -r em.pdb -o NVT_eq.tpr -maxwarn 5
+gmx_mpi mdrun -ntomp 1 -v -s NVT_eq.tpr -deffnm NVT_eq -c NVT_eq.pdb 
+
+exit

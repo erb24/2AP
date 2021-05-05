@@ -1,0 +1,39 @@
+#!/bin/bash 
+#SBATCH --job-name="AAA-0.1M"
+#SBATCH -A uoo104
+#SBATCH --output="OUT-AAA-MD.%j.%N.out"
+#SBATCH --partition=shared
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=64
+#SBATCH --export=ALL
+#SBATCH -t 48:00:00
+
+
+BD=$PWD
+cd $BD
+module load cpu/0.15.4 gcc/10.2.0 openmpi/4.0.4 gromacs/2020.4
+module list
+exe=`which gmx_mpi`
+
+
+for ((K=1;K<=1;K++)); do
+    tsim=$(echo $K\*10 | bc -l)
+
+    $exe grompp -f pro.mdp -p 2AP.top -c NVT_eq.pdb -o NPT_prod.tpr -maxwarn 5
+    $exe mdrun -v -s NPT_prod.tpr -deffnm NPT_prod -c NPT_last.pdb -ntomp 1
+
+
+    mkdir ${tsim}ns
+    mv    NPT_prod.xtc        ${tsim}ns
+    mv    NPT_prod.trr        ${tsim}ns
+    mv    NPT_prod.cpt        ${tsim}ns
+    mv    NPT_prod.log        ${tsim}ns
+    mv    NPT_prod.tpr        ${tsim}ns
+    mv    NPT_prod.edr        ${tsim}ns
+    cp    NPT_last.pdb        ${tsim}ns
+    rm -rf \#*
+done
+
+
+
+exit
