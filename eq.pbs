@@ -20,10 +20,10 @@ module load openmpi/4.0.4
 module load gromacs/2020.4
 
 gmx_mpi grompp -f eq_NPT.mdp -p ${sys}.top -c em.pdb -r em.pdb -o NPT_eq.tpr -maxwarn 5
-gmx_mpi mdrun -ntomp 1 -v -s NPT_eq.tpr -deffnm NPT_eq -c NPT_eq.pdb
+mpirun gmx_mpi mdrun -v -s NPT_eq.tpr -deffnm NPT_eq -c NPT_eq.pdb
 
 
 gmx_mpi grompp -f eq_NVT.mdp -p ${sys}.top -c NPT_eq.pdb -r em.pdb -o NVT_eq.tpr -maxwarn 5
-gmx_mpi mdrun -ntomp 1 -v -s NVT_eq.tpr -deffnm NVT_eq -c NVT_eq.pdb 
+mpirun gmx_mpi mdrun -v -s NVT_eq.tpr -deffnm NVT_eq -c NVT_eq.pdb 
 
 exit
