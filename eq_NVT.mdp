@@ -28,7 +28,7 @@ pme_order	    		= 10
 fourierspacing			= 0.12	
 ; Temperature coupling is on
 tcoupl					= V-rescale	            
-tc-grps					= Other   Water_and_ions	
+tc-grps					= RNA   Water_and_ions	
 tau_t					= 0.1	  0.1           
 ref_t					= 300 	  300           
 ; Pressure coupling is off
