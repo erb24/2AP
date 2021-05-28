@@ -14,11 +14,17 @@ echo "1" >> frames.ndx
 
 traj="after_rot.xtc"
 top="NPT_prod.tpr"
-gmx_mpi trjconv -f $traj -s $top -o Atoms-anly.pdb -n Atoms.ndx
-echo "1" | gmx_mpi trjconv -f Atoms-anly.pdb -s Atoms-anly.pdb -o top.pdb -fr frames.ndx
-echo "1" | gmx_mpi trjconv -f Atoms-anly.pdb -s Atoms-anly.pdb -o Atoms-anly.g96
-
-python gen_unformatted_traj.py
-python CDcalc_extended_dipole.py 
-
+BD=$PWD
+for i in `seq 10 10 1000`
+do
+  mkdir -v ${i}ns/
+  dir=${i}ns
+  gmx_mpi trjconv -f $traj -s $top -o ${dir}/Atoms-anly.pdb -n Atoms.ndx
+  echo "1" | gmx_mpi trjconv -f ${dir}/Atoms-anly.pdb -s ${dir}/Atoms-anly.pdb -o ${dir}/top.pdb -fr frames.ndx
+  echo "1" | gmx_mpi trjconv -f ${dir}/Atoms-anly.pdb -s ${dir}/Atoms-anly.pdb -o ${dir}/Atoms-anly.g96
+  cd $dir/
+  python ${BD}/gen_unformatted_traj.py
+  python ${BD}/CDcalc_extended_dipole.py
+  cd $BD
+done
 exit
