@@ -4,9 +4,8 @@
 #SBATCH --partition=shared
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --export=ALL
-#SBATCH --mem 25G 
-#SBATCH -t 48:00:00
+#SBATCH --export=ALL 
+#SBATCH -t 24:00:00
 
 module load gromacs
 echo "[ State 1 ]" > frames.ndx
@@ -23,8 +22,8 @@ do
   echo "1" | gmx_mpi trjconv -f ${dir}/Atoms-anly.pdb -s ${dir}/Atoms-anly.pdb -o ${dir}/top.pdb -fr frames.ndx
   echo "1" | gmx_mpi trjconv -f ${dir}/Atoms-anly.pdb -s ${dir}/Atoms-anly.pdb -o ${dir}/Atoms-anly.g96
   cd $dir/
-  python ${BD}/gen_unformatted_traj.py
-  python ${BD}/CDcalc_extended_dipole.py
+  cp -v ${BD}/run_CD.sh ./
+  sbatch run_CD.sh
   cd $BD
 done
 exit
